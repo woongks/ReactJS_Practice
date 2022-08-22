@@ -1,0 +1,12 @@
+.container {
+  width: 500px;
+  height: 500px;
+  padding: 20px;
+}
+
+.todoBlock {
+  padding: 30px;
+  margin-top: 50px;
+  background: #fff;
+  border-radius: 10px;
+}

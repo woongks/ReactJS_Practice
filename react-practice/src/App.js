@@ -3,10 +3,7 @@ import "./App.css";
 
 export default class App extends Component {
   state = {
-    todoData: [
-      { id: "1", title: "공부하기", completed: true },
-      { id: "2", title: "청소하기", completed: false },
-    ],
+    todoData: [],
     value: "",
   };
   btnStyle = {
@@ -17,12 +14,11 @@ export default class App extends Component {
     cursor: "pointer",
     float: "right",
   };
-
-  getStyle = () => {
+  listStyle = (completed) => {
     return {
       padding: "10px",
       borderBottom: "1px #ccc dotted",
-      textDecoration: "none",
+      textDecoration: completed ? "line-through" : "none",
     };
   };
 
@@ -32,9 +28,28 @@ export default class App extends Component {
   }
 
   handleChange = (e) => {
-    console.log(e.target.value);
     this.setState({ value: e.target.value });
   };
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    let newTodo = {
+      id: Date.now(),
+      title: this.state.value,
+      completed: false,
+    };
+    this.setState({ todoData: [...this.state.todoData, newTodo], value: "" });
+  };
+
+  handleCheck(id) {
+    let changedTodo = this.state.todoData.map((data) => {
+      if (data.id === id) {
+        data.completed = !data.completed;
+      }
+      return data;
+    });
+    this.setState({ todoData: changedTodo });
+  }
   render() {
     return (
       <div className="container">
@@ -43,9 +58,15 @@ export default class App extends Component {
             <h1>할 일 목록</h1>
           </div>
           {this.state.todoData.map((data) => (
-            <div style={this.getStyle()} key={data.id}>
+            <div style={this.listStyle(data.completed)} key={data.id}>
               <p>
-                <input type="checkbox" defaultChecked={false} />
+                <input
+                  type="checkbox"
+                  defaultChecked={false}
+                  onChange={() => {
+                    this.handleCheck(data.id);
+                  }}
+                />
                 {data.title}
                 <button
                   style={this.btnStyle}
@@ -55,7 +76,7 @@ export default class App extends Component {
               </p>
             </div>
           ))}
-          <form style={{ display: "flex" }}>
+          <form style={{ display: "flex" }} onSubmit={this.handleSubmit}>
             <input
               type="text"
               name="value"
